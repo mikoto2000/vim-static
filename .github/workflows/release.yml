@@ -17,6 +17,8 @@ jobs:
       run: nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs && nix-channel --update
     - name: List nix channel
       run: nix-channel --list
+    - name: Install nix-prefetch-git
+      run: nix-env -iA nixpkgs.nix-prefetch-git
     - name: Get tag name
       run: |
         TAG_NAME=$(echo "${{ github.ref }}" | cut -d '/' -f 3)
@@ -41,6 +43,8 @@ jobs:
       run: nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs && nix-channel --update
     - name: List nix channel
       run: nix-channel --list
+    - name: Install nix-prefetch-git
+      run: nix-env -iA nixpkgs.nix-prefetch-git
     - name: Get tag name
       run: |
         TAG_NAME=$(echo "${{ github.ref }}" | cut -d '/' -f 3)
