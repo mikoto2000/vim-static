@@ -1,0 +1,71 @@
+name: release
+
+on:
+  push:
+    tags: [ "v*" ]
+
+jobs:
+  build_x86_64:
+    runs-on: ubuntu-22.04
+    env:
+      ARCH: x86_64
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Nix
+      uses: cachix/install-nix-action@v27
+    - name: Add nix primary channel
+      run: nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs && nix-channel --update
+    - name: List nix channel
+      run: nix-channel --list
+    - name: Get tag name
+      run: |
+        TAG_NAME=$(echo "${{ github.ref }}" | cut -d '/' -f 3)
+        echo $TAG_NAME
+        echo "TAG_NAME=${TAG_NAME}" >> ${GITHUB_ENV}
+    - name: Build
+      run: bash ./build.sh ${{ env.TAG_NAME }} ${{ env.ARCH }}
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: vim-static-${{ env.ARCH }}
+        path: ./${{ env.ARCH }}/vim-${{ env.TAG_NAME }}-${{ env.ARCH }}.tar.gz
+  build_aarch64:
+    runs-on: ubuntu-22.04
+    env:
+      ARCH: aarch64
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Nix
+      uses: cachix/install-nix-action@v27
+    - name: Add nix primary channel
+      run: nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs && nix-channel --update
+    - name: List nix channel
+      run: nix-channel --list
+    - name: Get tag name
+      run: |
+        TAG_NAME=$(echo "${{ github.ref }}" | cut -d '/' -f 3)
+        echo $TAG_NAME
+        echo "TAG_NAME=${TAG_NAME}" >> ${GITHUB_ENV}
+    - name: Build
+      run: bash ./build.sh ${{ env.TAG_NAME }} ${{ env.ARCH }}
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: vim-static-${{ env.ARCH }}
+        path: ./${{ env.ARCH }}/vim-${{ env.TAG_NAME }}-${{ env.ARCH }}.tar.gz
+  release:
+    needs: [build_x86_64, build_aarch64]
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        path: dist
+        pattern: vim-static-*
+        merge-multiple: true
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: ./**/vim-*
+        allowUpdates: true
+        draft: true
+        omitBodyDuringUpdate: true
