@@ -3,7 +3,7 @@ let
   pkgsCross = pkgs.pkgsCross.aarch64-multiplatform.pkgsStatic;
 in
 pkgsCross.vim.overrideAttrs {
-  version = "v9.1.0898";
+  version = "v9.1.0899";
   src = pkgs.fetchFromGitHub {
     owner = "vim";
     repo = "vim";
