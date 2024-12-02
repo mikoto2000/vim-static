@@ -4,9 +4,15 @@
 #
 # Usage:
 #     build.sh TAG_NAME ARCH
+#
+# 途中で `default.nix` の内容を書き換えるため、
+# 必ず git reset --hard HEAD してから実行すること。
 
 TAG_NAME=$1
 ARCH=$2
+
+# バージョンの更新
+sed -i -e "s/v9.1.0899/${TAG_NAME}/g" ./${ARCH}/default.nix
 
 # ビルド
 cd ${ARCH}
