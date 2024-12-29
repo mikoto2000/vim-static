@@ -18,7 +18,7 @@ HASH=$(nix-prefetch-git --rev ${TAG_NAME} https://github.com/vim/vim | jq -r .ha
 sed -i -e "s/v9.1.0899/${TAG_NAME}/g" ./${ARCH}/default.nix
 
 # ハッシュの更新
-sed -i -e "s/sha256-pZ1zB+c9ZQ3e1H8m5jJ4WeqWmeaHMUENpzd5DNaKtjo=/${HASH}/g" ./${ARCH}/default.nix
+sed -i -e "s:sha256-pZ1zB+c9ZQ3e1H8m5jJ4WeqWmeaHMUENpzd5DNaKtjo=:${HASH}:g" ./${ARCH}/default.nix
 
 # ビルド
 cd ${ARCH}
